@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drawflow UI</title>
+    <!-- import the drawflow CSS and JS files -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jerosoler/Drawflow/dist/drawflow.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/jerosoler/Drawflow/dist/drawflow.min.js"></script>
+    <!-- add some custom CSS for styling -->
+    <style>
+        #drawflow {
+            width: 1400px;
+            height: 600px;
+            border: 1px solid black;
+        }
+        #address {
+            width: 300px;
+        }
+        #buy {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    {% csrf_token %}
+    <h1>Drawflow UI</h1>
+    <p>Drag and drop the components to configure your computer.</p>
+    <!-- create a div element to hold the drawflow UI -->
+    <div id="drawflow"></div>
+    <form method="POST" >
+        {% csrf_token %}
+        <label for="address">Enter your delivery address:</label>
+        <input type="text" id="address" name="address" required>
+        <input type="hidden" id="data" name="data">
+        <button type="submit" id="buy">Buy</button>
+    </form>
+    <!-- add some custom JS to initialize the drawflow UI and handle the form submission -->
+    <script>
+        // create a new drawflow instance
+        var id = document.getElementById("drawflow");
+        var editor = new Drawflow(id);
+        editor.start();
+
+        // create some nodes for the components
+        editor.addNode('CPU', 1, 1, 100, 200, 'CPU', {}, 'CPU');
+        editor.addNode('RAM', 1, 1, 300, 200, 'RAM', {}, 'RAM');
+        editor.addNode('HDD', 1, 1, 500, 200, 'HDD', {}, 'HDD');
+        editor.addNode('GPU', 1, 1, 700, 200, 'GPU', {}, 'GPU');
+
+        // create a node for the output
+        editor.addNode('Output', 1, 4, 400, 400, 'Output', {}, 'OUTPUT');
+
+        // get the form elements
+        var form = document.querySelector('form');
+        var data = document.getElementById('data');
+
+        // add an event listener to the form submission
+        form.addEventListener('submit', function(event) {
+            // prevent the default behavior
+            event.preventDefault();
+            // get the drawflow data as JSON
+            var drawflowData = JSON.stringify(editor.export());
+            // set the data input value to the drawflow data
+            data.value = drawflowData;
+            // submit the form
+            form.submit();
+        });
+    </script>
+</body>
+</html>
